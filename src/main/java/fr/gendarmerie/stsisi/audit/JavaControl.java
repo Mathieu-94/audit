@@ -35,15 +35,15 @@ public class JavaControl implements IPlugins {
     public boolean controlRegex(Path f) {
         int count = 0;
         String error = "ErrorJava == -1";
-//        Regex linux => "(\r|\n)\\s*(?!//)\\s*AbortOnError\\s*True"
-        String regex = "[\\w]*(ErrorJava)[\\s]*[=]*[\\s]*(-1)[\\w ]*";
+//        [\w]*(ErrorJava)[\s]*[=]*[\s]*(-1)[\w ]*
+        String regex = "(.*)(ErrorJava)[\\s]*[=]{2}[\\s]*(-1)";
         try {
             String content = new String(Files.readAllBytes(f));
             Pattern r = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
             Matcher m = r.matcher(content);
             while (m.find()) {
-                int value = Integer.parseInt(m.group(2));
-                if (value == -1) {
+                int value = Integer.parseInt(m.group(3));
+                if (value == -1 && !m.group(1).contains("//")) {
                     count++;
                 }
             }

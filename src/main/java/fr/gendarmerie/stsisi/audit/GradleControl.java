@@ -36,13 +36,15 @@ public class GradleControl implements IPlugins {
         int count = 0;
         String error = "AbortOnError True";
 //        Regex linux => "(\r|\n)\\s*(?!//)\\s*AbortOnError\\s*True"
-        String regex = "\\s*(?!//)\\s*AbortOnError\\s*True";
+        String regex = "(.*)(AbortOnError)\\s*(True)";
         try {
             String content = new String(Files.readAllBytes(f));
             Pattern r = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
             Matcher m = r.matcher(content);
             while (m.find()) {
-                count++;
+                if (!m.group(1).contains("//")) {
+                    count++;
+                }
             }
             System.out.println(count + " match(s) sur " + f + " pour l'erreur => " + error);
         } catch (Exception e) {
