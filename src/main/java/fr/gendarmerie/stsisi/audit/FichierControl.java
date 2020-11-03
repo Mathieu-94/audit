@@ -34,6 +34,7 @@ public class FichierControl implements IPlugins {
     @Override
     public boolean controlRegex(Path f) {
         int count = 0;
+        int ligne = 0;
         String error = "minSDK>19";
 //        Regex linux => "(\r|\n)\\s*(?!//)\\s*AbortOnError\\s*True"
 //        [\w]*(minSDK)[\s]*[>][\s]*(\d*)[\w]*
