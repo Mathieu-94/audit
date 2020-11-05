@@ -1,7 +1,11 @@
 package fr.gendarmerie.stsisi.audit;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -11,23 +15,15 @@ public class DalvikControl implements IPlugins {
         String name = ".java|kt";
         Pattern r = Pattern.compile(name);
         Matcher m = r.matcher(f.toFile().getName());
-        if (m.find()) {
-//            System.out.println("\nMatch sur " + this.getClass().getCanonicalName() + " avec " + f);
-            return true;
-        } else {
-            return false;
-        }
+        //            System.out.println("\nMatch sur " + this.getClass().getCanonicalName() + " avec " + f);
+        return m.find();
     }
 
     @Override
     public boolean controlSize(Path f) {
         String file = f.toString();
-        if (file.length() > 0) {
-            return true;
-        } else {
-//            System.out.println(f + " => fichier vide");
-            return false;
-        }
+        //            System.out.println(f + " => fichier vide");
+        return file.length() > 0;
     }
 
     @Override
@@ -54,19 +50,20 @@ public class DalvikControl implements IPlugins {
                     count2++;
                 }
             }
+                if (count1 != 0 || count2 != 0) {
+                    System.out.println("Match(s) sur " + count1 + " ligne(s) pour => " + error1 + " sur => " + f);
+                    System.out.println("Match(s) sur " + count2 + " ligne(s) pour => " + error2 + " sur => " + f);
+                    String logPath = "C:\\Users\\Shadow\\IdeaProjects\\audit\\log";
+                    Date date = new Date();
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH-mm-ss");
+                    File logDalvik = new File(logPath,dateFormat.format(date) + "- logDalvik.txt");
+                    FileWriter myWriter = new FileWriter(logDalvik);
+                    myWriter.write("Match(s) sur " + count1 + " ligne(s) pour => " + error1 + " sur => " + f +"\nMatch(s) sur " + count2 + " ligne(s) pour => " + error2 + " sur => " + f);
+                    myWriter.close();
+                }
         } catch (Exception e) {
             System.out.println("Erreur => " + e);
         }
-
-        if (count1 != 0 || count2 != 0) {
-            if (count1 != 0) {
-                System.out.println("Match(s) sur " + count1 + " ligne(s)\nPour => " + error1 + " sur => " + f);
-            }
-            if (count2 != 0) {
-                System.out.println("Match(s) sur " + count2 + " ligne(s)\nPour => " + error2 + " sur => " + f);
-            }
-            return true;
-        }
-        return false;
+        return true;
     }
 }

@@ -1,7 +1,11 @@
 package fr.gendarmerie.stsisi.audit;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -12,12 +16,8 @@ public class FichierControl implements IPlugins {
         String name = "^fichier";
         Pattern r = Pattern.compile(name);
         Matcher m = r.matcher(f.toFile().getName());
-        if (m.find()) {
-//            System.out.println("\nMatch sur " + this.getClass().getCanonicalName() + " avec " + f);
-            return true;
-        } else {
-            return false;
-        }
+        //            System.out.println("\nMatch sur " + this.getClass().getCanonicalName() + " avec " + f);
+        return m.find();
     }
 
     @Override
@@ -49,12 +49,18 @@ public class FichierControl implements IPlugins {
                 }
             }
             if (count != 0) {
-                System.out.println("Match(s) sur " + count + " ligne(s)\nPour => " + error + " sur => " + f);
-                return true;
+                System.out.println("Match(s) sur " + count + " ligne(s) pour => " + error + " sur => " + f);
+                String logPath = "C:\\Users\\Shadow\\IdeaProjects\\audit\\log";
+                Date date = new Date();
+                SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH-mm-ss");
+                File logFichier = new File(logPath,dateFormat.format(date) + "- logFichier.txt");
+                FileWriter myWriter = new FileWriter(logFichier);
+                myWriter.write("Match(s) sur " + count + " ligne(s) pour => " + error + " sur => " + f);
+                myWriter.close();
             }
         } catch (Exception e) {
             System.out.println("Erreur => " + e);
         }
-        return false;
+        return true;
     }
 }
