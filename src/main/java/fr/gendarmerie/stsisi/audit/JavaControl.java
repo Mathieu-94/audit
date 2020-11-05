@@ -13,7 +13,7 @@ public class JavaControl implements IPlugins {
         Pattern r = Pattern.compile(name);
         Matcher m = r.matcher(f.toFile().getName());
         if (m.find()) {
-            System.out.println("\nMatch sur " + this.getClass().getCanonicalName() + " avec " + f);
+//            System.out.println("\nMatch sur " + this.getClass().getCanonicalName() + " avec " + f);
             return true;
         } else {
             return false;
@@ -47,10 +47,13 @@ public class JavaControl implements IPlugins {
                     count++;
                 }
             }
-            System.out.println(count + " match(s) sur " + f + " pour l'erreur => " + error);
+            if (count != 0) {
+                System.out.println("Match(s) sur " + count + " ligne(s)\nPour => " + error + " sur => " + f);
+                return true;
+            }
         } catch (Exception e) {
-            System.out.println("Erreur file => string");
+            System.out.println("Erreur => " + e);
         }
-        return true;
+        return false;
     }
 }

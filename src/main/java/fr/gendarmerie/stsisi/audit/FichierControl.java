@@ -13,7 +13,7 @@ public class FichierControl implements IPlugins {
         Pattern r = Pattern.compile(name);
         Matcher m = r.matcher(f.toFile().getName());
         if (m.find()) {
-            System.out.println("\nMatch sur " + this.getClass().getCanonicalName() + " avec " + f);
+//            System.out.println("\nMatch sur " + this.getClass().getCanonicalName() + " avec " + f);
             return true;
         } else {
             return false;
@@ -34,7 +34,6 @@ public class FichierControl implements IPlugins {
     @Override
     public boolean controlRegex(Path f) {
         int count = 0;
-        int ligne = 0;
         String error = "minSDK>19";
 //        Regex linux => "(\r|\n)\\s*(?!//)\\s*AbortOnError\\s*True"
 //        [\w]*(minSDK)[\s]*[>][\s]*(\d*)[\w]*
@@ -49,10 +48,13 @@ public class FichierControl implements IPlugins {
                     count++;
                 }
             }
-            System.out.println(count + " match(s) sur " + f + " pour l'erreur => " + error);
+            if (count != 0) {
+                System.out.println("Match(s) sur " + count + " ligne(s)\nPour => " + error + " sur => " + f);
+                return true;
+            }
         } catch (Exception e) {
-            System.out.println("Erreur file => string");
+            System.out.println("Erreur => " + e);
         }
-        return true;
+        return false;
     }
 }
