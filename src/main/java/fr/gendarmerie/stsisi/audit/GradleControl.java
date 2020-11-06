@@ -51,14 +51,15 @@ public class GradleControl implements IPlugins {
                 String logPath = "C:\\Users\\Shadow\\IdeaProjects\\audit\\log";
                 Date date = new Date();
                 SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH-mm-ss");
-                File logGradle = new File( logPath,dateFormat.format(date) + "- logGradle.txt");
+                File logGradle = new File(logPath, dateFormat.format(date) + "- logGradle.txt");
                 FileWriter myWriter = new FileWriter(logGradle);
                 myWriter.write("Match(s) sur " + count + " ligne(s) pour => " + error + " sur => " + f);
                 myWriter.close();
+                return true;
             }
         } catch (Exception e) {
             System.out.println("Erreur => " + e);
         }
-        return true;
+        return false;
     }
 }

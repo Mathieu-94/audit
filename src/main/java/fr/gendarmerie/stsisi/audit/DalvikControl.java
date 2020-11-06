@@ -50,20 +50,21 @@ public class DalvikControl implements IPlugins {
                     count2++;
                 }
             }
-                if (count1 != 0 || count2 != 0) {
-                    System.out.println("Match(s) sur " + count1 + " ligne(s) pour => " + error1 + " sur => " + f);
-                    System.out.println("Match(s) sur " + count2 + " ligne(s) pour => " + error2 + " sur => " + f);
-                    String logPath = "C:\\Users\\Shadow\\IdeaProjects\\audit\\log";
-                    Date date = new Date();
-                    SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH-mm-ss");
-                    File logDalvik = new File(logPath,dateFormat.format(date) + "- logDalvik.txt");
-                    FileWriter myWriter = new FileWriter(logDalvik);
-                    myWriter.write("Match(s) sur " + count1 + " ligne(s) pour => " + error1 + " sur => " + f +"\nMatch(s) sur " + count2 + " ligne(s) pour => " + error2 + " sur => " + f);
-                    myWriter.close();
-                }
+            if (count1 != 0 || count2 != 0) {
+                System.out.println("Match(s) sur " + count1 + " ligne(s) pour => " + error1 + " sur => " + f);
+                System.out.println("Match(s) sur " + count2 + " ligne(s) pour => " + error2 + " sur => " + f);
+                String logPath = "C:\\Users\\Shadow\\IdeaProjects\\audit\\log";
+                Date date = new Date();
+                SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH-mm-ss");
+                File logDalvik = new File(logPath, dateFormat.format(date) + "- logDalvik.txt");
+                FileWriter myWriter = new FileWriter(logDalvik);
+                myWriter.write("Match(s) sur " + count1 + " ligne(s) pour => " + error1 + " sur => " + f + "\nMatch(s) sur " + count2 + " ligne(s) pour => " + error2 + " sur => " + f);
+                myWriter.close();
+                return true;
+            }
         } catch (Exception e) {
             System.out.println("Erreur => " + e);
         }
-        return true;
+        return false;
     }
 }

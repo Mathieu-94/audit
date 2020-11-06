@@ -52,14 +52,15 @@ public class JavaControl implements IPlugins {
                 String logPath = "C:\\Users\\Shadow\\IdeaProjects\\audit\\log";
                 Date date = new Date();
                 SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH-mm-ss");
-                File logJava = new File(logPath,dateFormat.format(date) + "- logJava.txt");
+                File logJava = new File(logPath, dateFormat.format(date) + "- logJava.txt");
                 FileWriter myWriter = new FileWriter(logJava);
                 myWriter.write("Match(s) sur " + count + " ligne(s) pour => " + error + " sur => " + f);
                 myWriter.close();
+                return true;
             }
         } catch (Exception e) {
             System.out.println("Erreur => " + e);
         }
-        return true;
+        return false;
     }
 }

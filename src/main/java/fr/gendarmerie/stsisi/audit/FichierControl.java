@@ -53,14 +53,15 @@ public class FichierControl implements IPlugins {
                 String logPath = "C:\\Users\\Shadow\\IdeaProjects\\audit\\log";
                 Date date = new Date();
                 SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH-mm-ss");
-                File logFichier = new File(logPath,dateFormat.format(date) + "- logFichier.txt");
+                File logFichier = new File(logPath, dateFormat.format(date) + "- logFichier.txt");
                 FileWriter myWriter = new FileWriter(logFichier);
                 myWriter.write("Match(s) sur " + count + " ligne(s) pour => " + error + " sur => " + f);
                 myWriter.close();
+                return true;
             }
         } catch (Exception e) {
             System.out.println("Erreur => " + e);
         }
-        return true;
+        return false;
     }
 }
