@@ -7,7 +7,9 @@ import java.util.Arrays;
 import java.util.List;
 
 public class Main {
-    public static void main(String[] path) {
+    public static void main(String[] argv) {
+//        String path = argv[0];
+//        System.out.println(path);
         List<IPlugins> mList = Arrays.asList(new GradleControl(), new FichierControl(), new JavaControl(), new DalvikControl());
         ArrayList<Boolean> rList = new ArrayList<>();
         try {
