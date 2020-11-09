@@ -1,4 +1,6 @@
-package fr.gendarmerie.stsisi.audit;
+package fr.gendarmerie.stsisi.audit.controles;
+
+import fr.gendarmerie.stsisi.audit.interfaces.IPlugins;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -14,17 +16,15 @@ public class Main {
         ArrayList<Boolean> rList = new ArrayList<>();
         try {
 //            long start = System.currentTimeMillis();
-            Files.walk(Paths.get("C:\\Users\\Shadow\\Desktop\\Test1")).filter(Files::isRegularFile).filter(Files::isReadable).filter(Files::isWritable).forEach((f) -> {
-//                new Thread(() -> {
-                for (IPlugins p : mList) {
-                    if (p.controlName(f)) {
-                        if (p.controlSize(f)) {
-                            rList.add(p.controlRegex(f));
-                        }
+            Files.walk(Paths.get("C:\\Users\\Shadow\\Desktop\\Test1")).filter(Files::isRegularFile).filter(Files::isReadable).filter(Files::isWritable).forEach((f) -> new Thread(() -> {
+            for (IPlugins p : mList) {
+                if (p.controlName(f)) {
+                    if (p.controlSize(f)) {
+                        rList.add(p.controlRegex(f));
                     }
                 }
-//                }).start();
-            });
+            }
+            }).start());
 //            long stop = System.currentTimeMillis() - start;
 //            System.out.println("Time : " + stop);
         } catch (Exception e) {

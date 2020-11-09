@@ -1,4 +1,6 @@
-package fr.gendarmerie.stsisi.audit;
+package fr.gendarmerie.stsisi.audit.controles;
+
+import fr.gendarmerie.stsisi.audit.interfaces.IPlugins;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -9,11 +11,11 @@ import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class FichierControl implements IPlugins {
+public class GradleControl implements IPlugins {
 
     @Override
     public boolean controlName(Path f) {
-        String name = "^fichier";
+        String name = "^build.gradle";
         Pattern r = Pattern.compile(name);
         Matcher m = r.matcher(f.toFile().getName());
         //            System.out.println("\nMatch sur " + this.getClass().getCanonicalName() + " avec " + f);
@@ -34,17 +36,15 @@ public class FichierControl implements IPlugins {
     @Override
     public boolean controlRegex(Path f) {
         int count = 0;
-        String error = "minSDK>19";
+        String error = "AbortOnError True";
 //        Regex linux => "(\r|\n)\\s*(?!//)\\s*AbortOnError\\s*True"
-//        [\w]*(minSDK)[\s]*[>][\s]*(\d*)[\w]*
-        String regex = "(.*)(minSDK)[\\s]*[>][\\s]*(\\d*)";
+        String regex = "(.*)(AbortOnError)\\s*(True)";
         try {
             String content = new String(Files.readAllBytes(f));
             Pattern r = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
             Matcher m = r.matcher(content);
             while (m.find()) {
-                int value = Integer.parseInt(m.group(3));
-                if (value > 19 && !m.group(1).contains("//")) {
+                if (!m.group(1).contains("//")) {
                     count++;
                 }
             }
@@ -53,8 +53,8 @@ public class FichierControl implements IPlugins {
                 String logPath = "C:\\Users\\Shadow\\IdeaProjects\\audit\\log";
                 Date date = new Date();
                 SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH-mm-ss");
-                File logFichier = new File(logPath, dateFormat.format(date) + "- logFichier.txt");
-                FileWriter myWriter = new FileWriter(logFichier);
+                File logGradle = new File(logPath, dateFormat.format(date) + "- logGradle.txt");
+                FileWriter myWriter = new FileWriter(logGradle);
                 myWriter.write("Match(s) sur " + count + " ligne(s) pour => " + error + " sur => " + f);
                 myWriter.close();
                 return true;

@@ -1,4 +1,4 @@
-package fr.gendarmerie.stsisi.audit;
+package fr.gendarmerie.stsisi.audit.interfaces;
 
 import java.nio.file.Path;
 

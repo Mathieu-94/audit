@@ -1,4 +1,6 @@
-package fr.gendarmerie.stsisi.audit;
+package fr.gendarmerie.stsisi.audit.controles;
+
+import fr.gendarmerie.stsisi.audit.interfaces.IPlugins;
 
 import java.io.File;
 import java.io.FileWriter;
