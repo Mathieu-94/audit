@@ -30,7 +30,7 @@ public class FichierControl implements IPlugins {
     }
 
     @Override
-    public boolean controlRegex(Path f) {
+    public boolean controlRegex(Path f, String date) {
         int count = 0;
         String error = "minSDK>19";
 //        Regex linux => "(\r|\n)\\s*(?!//)\\s*AbortOnError\\s*True"
@@ -48,7 +48,7 @@ public class FichierControl implements IPlugins {
             }
             if (count != 0) {
                 Tools tools = new Tools();
-                tools.controlFile(System.getProperty("user.dir")+"\\log.txt", "Match(s) sur " + count + " ligne(s) pour => " + error + " sur => " + f);
+                tools.controlFile(System.getProperty("user.dir")+"\\"+date+".txt", "Match(s) sur " + count + " ligne(s) pour => " + error + " sur => " + f);
                 return true;
             }
         } catch (Exception e) {

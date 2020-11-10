@@ -7,5 +7,5 @@ public interface IPlugins {
 
     boolean controlSize(Path f);
 
-    boolean controlRegex(Path f);
+    boolean controlRegex(Path f, String date);
 }

@@ -25,7 +25,7 @@ public class DalvikControl implements IPlugins {
     }
 
     @Override
-    public boolean controlRegex(Path f) {
+    public boolean controlRegex(Path f, String date) {
         int count1 = 0;
         int count2 = 0;
         String error1 = "import dalvik.system.DexClassLoader";
@@ -51,10 +51,10 @@ public class DalvikControl implements IPlugins {
             Tools tools = new Tools();
             if (count1 != 0 || count2 !=0) {
                 if (count1 != 0) {
-                    tools.controlFile(System.getProperty("user.dir") + "\\log.txt", "Match(s) sur " + count1 + " ligne(s) pour => " + error1 + " sur => " + f);
+                    tools.controlFile(System.getProperty("user.dir")+"\\"+date+".txt", "Match(s) sur " + count1 + " ligne(s) pour => " + error1 + " sur => " + f);
                 }
                 if (count2 != 0) {
-                    tools.controlFile(System.getProperty("user.dir") + "\\log.txt", "Match(s) sur " + count2 + " ligne(s) pour => " + error2 + " sur => " + f);
+                    tools.controlFile(System.getProperty("user.dir")+"\\"+date+".txt", "Match(s) sur " + count2 + " ligne(s) pour => " + error2 + " sur => " + f);
                 }
                 return true;
             }
