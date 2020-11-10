@@ -13,7 +13,7 @@ public class Tools {
             b = logFile.createNewFile();
             Files.write(Paths.get(stringCurrentPath), (error+"\n").getBytes(), StandardOpenOption.APPEND);
         } catch (Exception e) {
-            System.out.println(e);
+            System.out.println("erreur: "+e);
         } finally {
             if (b) {
                 System.out.println("Création d'un fichier log.txt => "+stringCurrentPath);
