@@ -2,12 +2,8 @@ package fr.gendarmerie.stsisi.audit.controles;
 
 import fr.gendarmerie.stsisi.audit.interfaces.IPlugins;
 
-import java.io.File;
-import java.io.FileWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -49,14 +45,8 @@ public class GradleControl implements IPlugins {
                 }
             }
             if (count != 0) {
-                System.out.println("Match(s) sur " + count + " ligne(s) pour => " + error + " sur => " + f);
-                String logPath = "C:\\Users\\Shadow\\IdeaProjects\\audit\\log";
-                Date date = new Date();
-                SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH-mm-ss");
-                File logGradle = new File(logPath, dateFormat.format(date) + "- logGradle.txt");
-                FileWriter myWriter = new FileWriter(logGradle);
-                myWriter.write("Match(s) sur " + count + " ligne(s) pour => " + error + " sur => " + f);
-                myWriter.close();
+                Tools tools = new Tools();
+                tools.controlFile(System.getProperty("user.dir")+"\\log.txt", "Match(s) sur " + count + " ligne(s) pour => " + error + " sur => " + f);
                 return true;
             }
         } catch (Exception e) {
