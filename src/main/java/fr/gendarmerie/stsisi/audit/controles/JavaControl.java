@@ -22,12 +22,7 @@ public class JavaControl implements IPlugins {
     @Override
     public boolean controlSize(Path f) {
         String file = f.toString();
-        if (file.length() > 0) {
-            return true;
-        } else {
-            System.out.println(f + " => fichier vide");
-            return false;
-        }
+        return file.length() > 0;
     }
 
     @Override
@@ -48,7 +43,8 @@ public class JavaControl implements IPlugins {
             }
             if (count != 0) {
                 Tools tools = new Tools();
-                tools.controlFile(System.getProperty("user.dir")+"\\"+date+".txt", "Match(s) sur " + count + " ligne(s) pour => " + error + " sur => " + f);
+                String pathFile = tools.pathFile()+"\\"+date+"-log.txt" ;
+                tools.controlFile(pathFile, "Match(s) sur " + count + " ligne(s) pour => " + error + " sur => " + f);
                 return true;
             }
         } catch (Exception e) {

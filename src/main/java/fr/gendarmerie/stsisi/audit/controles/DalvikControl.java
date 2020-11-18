@@ -21,7 +21,6 @@ public class DalvikControl implements IPlugins {
     @Override
     public boolean controlSize(Path f) {
         String file = f.toString();
-        //            System.out.println(f + " => fichier vide");
         return file.length() > 0;
     }
 
@@ -49,13 +48,14 @@ public class DalvikControl implements IPlugins {
                     count2++;
                 }
             }
-            Tools tools = new Tools();
             if (count1 != 0 || count2 !=0) {
+                Tools tools = new Tools();
+                String pathFile = tools.pathFile()+"\\"+date+"-log.txt" ;
                 if (count1 != 0) {
-                    tools.controlFile(System.getProperty("user.dir")+"\\"+date+".txt", "Match(s) sur " + count1 + " ligne(s) pour => " + error1 + " sur => " + f);
+                    tools.controlFile(pathFile, "Match(s) sur " + count1 + " ligne(s) pour => " + error1 + " sur => " + f);
                 }
                 if (count2 != 0) {
-                    tools.controlFile(System.getProperty("user.dir")+"\\"+date+".txt", "Match(s) sur " + count2 + " ligne(s) pour => " + error2 + " sur => " + f);
+                    tools.controlFile(pathFile, "Match(s) sur " + count2 + " ligne(s) pour => " + error2 + " sur => " + f);
                 }
                 return true;
             }
