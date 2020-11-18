@@ -4,6 +4,7 @@ package fr.gendarmerie.stsisi.audit;
 import fr.gendarmerie.stsisi.audit.controles.*;
 import fr.gendarmerie.stsisi.audit.interfaces.IPlugins;
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.DateFormat;

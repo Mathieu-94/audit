@@ -56,7 +56,7 @@ public class JsonControl implements IPlugins {
 
             for (JsonElement j : jsonArray) {
                 JsonObject codeSignature = j.getAsJsonObject();
-                if (((String.valueOf(codeSignature.get("code_signature"))).substring(1, (String.valueOf(codeSignature.get("code_signature"))).length() - 1)).length() > 0) {
+                if (((String.valueOf(codeSignature.get("code_signature"))).substring(1, (String.valueOf(codeSignature.get("code_signature"))).length() - 1)).length() > 0) { //J'enleve les " au debut et à la fin
                     String strCode = (String.valueOf(codeSignature.get("code_signature"))).substring(1, (String.valueOf(codeSignature.get("code_signature"))).length() - 1);
 //                    System.out.println(strCode);
 //                    String strCode2 = "(.*)("+strCode+")(.*)";
