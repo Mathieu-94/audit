@@ -13,7 +13,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLConnection;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Iterator;
@@ -57,12 +56,12 @@ public class JsonControl implements IPlugins {
 //            JsonElement root = JsonParser.parseReader(new InputStreamReader((InputStream) request.getContent()));
                 JsonElement root = JsonParser.parseReader(new InputStreamReader((InputStream) conn.getContent()));
                 json = root.getAsJsonObject().getAsJsonObject("trackers");
-            } catch (Exception ex) {
+            } catch (Exception ignored) {
             } finally {
                 if (is != null) {
                     try {
                         is.close();
-                    } catch (IOException e) {
+                    } catch (IOException ignored) {
                     }
                 }
                 if (conn != null) {
@@ -71,6 +70,7 @@ public class JsonControl implements IPlugins {
             }
 
 
+            assert json != null;
             Iterator x = json.keySet().iterator();
             JsonArray jsonArray = new JsonArray();
 
@@ -81,9 +81,9 @@ public class JsonControl implements IPlugins {
 
 //            String strCode2;
             for (JsonElement j : jsonArray) {
-                JsonObject codeSignature = j.getAsJsonObject();
-                if (((String.valueOf(codeSignature.get("code_signature"))).substring(1, (String.valueOf(codeSignature.get("code_signature"))).length() - 1)).length() > 0) { //J'enleve les " au debut et à la fin
-                    String strCode = (String.valueOf(codeSignature.get("code_signature"))).substring(1, (String.valueOf(codeSignature.get("code_signature"))).length() - 1);
+                JsonObject jsonObject = j.getAsJsonObject();
+                if (((String.valueOf(jsonObject.get("code_signature"))).substring(1, (String.valueOf(jsonObject.get("code_signature"))).length() - 1)).length() > 0) { //J'enleve les " au debut et à la fin
+                    String strCode = (String.valueOf(jsonObject.get("code_signature"))).substring(1, (String.valueOf(jsonObject.get("code_signature"))).length() - 1);
 //                    System.out.println(strCode);
 //                    strCode2 = "(.*)("+strCode+")(.*)";
 //                    strCode2 = tools.stringBuilder(strCode);

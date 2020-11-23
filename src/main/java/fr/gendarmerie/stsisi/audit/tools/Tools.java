@@ -19,9 +19,8 @@ public class Tools {
     }
 
     public String pathFile() {
-        String path = System.getProperty("user.dir");
 //        return "C:\\Users\\Shadow\\IdeaProjects\\audit";
-        return path;
+        return System.getProperty("user.dir");
     }
 
     public String addressJson() {
