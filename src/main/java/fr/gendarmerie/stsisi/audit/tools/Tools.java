@@ -29,9 +29,10 @@ public class Tools {
 
     public String stringBuilder(String strCode) {
         StringBuilder sb = new StringBuilder();
-        sb.append("(.*)(");
-        sb.append(strCode);
-        sb.append(")(.*)");
-        return sb.toString();
+//        sb.append("(.*)(");
+//        sb.append(strCode);
+//        sb.append(")(.*)");
+//        return sb.toString();
+        return ((sb.append("(.*)(").append(strCode).append(")(.*)")).toString());
     }
 }

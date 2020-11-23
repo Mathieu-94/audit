@@ -79,14 +79,12 @@ public class JsonControl implements IPlugins {
                 jsonArray.add(json.get(key));
             }
 
-//            String strCode2;
             for (JsonElement j : jsonArray) {
                 JsonObject jsonObject = j.getAsJsonObject();
                 if (((String.valueOf(jsonObject.get("code_signature"))).substring(1, (String.valueOf(jsonObject.get("code_signature"))).length() - 1)).length() > 0) { //J'enleve les " au debut et à la fin
                     String strCode = (String.valueOf(jsonObject.get("code_signature"))).substring(1, (String.valueOf(jsonObject.get("code_signature"))).length() - 1);
-//                    System.out.println(strCode);
-//                    strCode2 = "(.*)("+strCode+")(.*)";
-//                    strCode2 = tools.stringBuilder(strCode);
+//                    String strCode2 = "(.*)("+strCode+")(.*)";
+//                    String strCode2 = tools.stringBuilder(strCode);
 //                    Pattern r = Pattern.compile(strCode2, Pattern.CASE_INSENSITIVE);
                     Pattern r = Pattern.compile(strCode, Pattern.CASE_INSENSITIVE);
                     Matcher m = r.matcher(content);
@@ -95,7 +93,6 @@ public class JsonControl implements IPlugins {
                         count++;
 //                        }
                     }
-//                }
                 }
             }
             if (count != 0) {
