@@ -7,8 +7,11 @@ import com.google.gson.JsonParser;
 import fr.gendarmerie.stsisi.audit.interfaces.IPlugins;
 import fr.gendarmerie.stsisi.audit.tools.Tools;
 
+import java.io.BufferedInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.file.Files;
@@ -40,11 +43,33 @@ public class JsonControl implements IPlugins {
             String error = "Trackers";
             String content = new String(Files.readAllBytes(f));
             Tools tools = new Tools();
-            URL url = new URL(tools.addressJson()); //Classe qui retourne l'URL du JSon
-            URLConnection request = url.openConnection();
-            request.connect();
-            JsonElement root = JsonParser.parseReader(new InputStreamReader((InputStream) request.getContent()));
-            JsonObject json = root.getAsJsonObject().getAsJsonObject("trackers");
+
+            HttpURLConnection conn = null;
+            InputStream is = null;
+            JsonObject json = null;
+
+            try {
+                URL url = new URL(tools.addressJson()); //Classe qui retourne l'URL du JSon
+//            URLConnection request = url.openConnection();
+                conn = (HttpURLConnection) url.openConnection();
+                is = new BufferedInputStream(conn.getInputStream());
+                conn.connect();
+//            JsonElement root = JsonParser.parseReader(new InputStreamReader((InputStream) request.getContent()));
+                JsonElement root = JsonParser.parseReader(new InputStreamReader((InputStream) conn.getContent()));
+                json = root.getAsJsonObject().getAsJsonObject("trackers");
+            } catch (Exception ex) {
+            } finally {
+                if (is != null) {
+                    try {
+                        is.close();
+                    } catch (IOException e) {
+                    }
+                }
+                if (conn != null) {
+                    conn.disconnect();
+                }
+            }
+
 
             Iterator x = json.keySet().iterator();
             JsonArray jsonArray = new JsonArray();
@@ -54,12 +79,14 @@ public class JsonControl implements IPlugins {
                 jsonArray.add(json.get(key));
             }
 
+//            String strCode2;
             for (JsonElement j : jsonArray) {
                 JsonObject codeSignature = j.getAsJsonObject();
                 if (((String.valueOf(codeSignature.get("code_signature"))).substring(1, (String.valueOf(codeSignature.get("code_signature"))).length() - 1)).length() > 0) { //J'enleve les " au debut et à la fin
                     String strCode = (String.valueOf(codeSignature.get("code_signature"))).substring(1, (String.valueOf(codeSignature.get("code_signature"))).length() - 1);
 //                    System.out.println(strCode);
-//                    String strCode2 = "(.*)("+strCode+")(.*)";
+//                    strCode2 = "(.*)("+strCode+")(.*)";
+//                    strCode2 = tools.stringBuilder(strCode);
 //                    Pattern r = Pattern.compile(strCode2, Pattern.CASE_INSENSITIVE);
                     Pattern r = Pattern.compile(strCode, Pattern.CASE_INSENSITIVE);
                     Matcher m = r.matcher(content);

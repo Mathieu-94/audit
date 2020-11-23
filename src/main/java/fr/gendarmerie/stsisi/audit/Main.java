@@ -4,7 +4,6 @@ package fr.gendarmerie.stsisi.audit;
 import fr.gendarmerie.stsisi.audit.controles.*;
 import fr.gendarmerie.stsisi.audit.interfaces.IPlugins;
 
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.DateFormat;
@@ -43,7 +42,7 @@ public class Main {
             System.out.println("Erreur parcours dossier => " + e);
         }
         while (Thread.activeCount() != 1) {
-            Thread.sleep(0,5);
+            Thread.sleep(0, 5);
         }
         if (b.get()) {
             System.exit(-1);
@@ -51,35 +50,5 @@ public class Main {
             System.out.println("Aucune erreur detectée");
             System.exit(0);
         }
-
-
-//
-//        Tools tools = new Tools();
-//        URL url = new URL(tools.addressJson()); //Classe qui retourne l'URL du JSon
-//        URLConnection request = url.openConnection();
-//        request.connect();
-//        JsonElement root = JsonParser.parseReader(new InputStreamReader((InputStream) request.getContent()));
-//        JsonObject json = root.getAsJsonObject().getAsJsonObject("trackers");
-//
-//        Iterator x = json.keySet().iterator();
-//        JsonArray jsonArray = new JsonArray();
-//
-//        while (x.hasNext()) {
-//            String key = (String) x.next();
-//            jsonArray.add(json.get(key));
-//        }
-//
-//        for (JsonElement j:jsonArray) {
-//                JsonObject codeSignature = j.getAsJsonObject();
-//            if (((String.valueOf(codeSignature.get("code_signature"))).substring(1, (String.valueOf(codeSignature.get("code_signature"))).length()-1)).length() > 0) {
-//                String strCode = (String.valueOf(codeSignature.get("code_signature"))).substring(1, (String.valueOf(codeSignature.get("code_signature"))).length() - 1);
-//                System.out.println(strCode);
-////                if (strCode.contains("|")) {
-////                    System.out.println("ok");
-////                }
-//            }
-//        }
-
-
     }
 }

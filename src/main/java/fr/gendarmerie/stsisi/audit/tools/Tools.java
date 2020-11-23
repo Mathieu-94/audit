@@ -19,10 +19,20 @@ public class Tools {
     }
 
     public String pathFile() {
-        return "C:\\Users\\Shadow\\IdeaProjects\\audit";
+        String path = System.getProperty("user.dir");
+//        return "C:\\Users\\Shadow\\IdeaProjects\\audit";
+        return path;
     }
 
     public String addressJson() {
         return "https://reports.exodus-privacy.eu.org/api/trackers";
+    }
+
+    public String stringBuilder(String strCode) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("(.*)(");
+        sb.append(strCode);
+        sb.append(")(.*)");
+        return sb.toString();
     }
 }
