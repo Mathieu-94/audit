@@ -15,7 +15,6 @@ public class JavaControl implements IPlugins {
         String name = "[\\w*].java";
         Pattern r = Pattern.compile(name);
         Matcher m = r.matcher(f.toFile().getName());
-        //            System.out.println("\nMatch sur " + this.getClass().getCanonicalName() + " avec " + f);
         return m.find();
     }
 
@@ -26,11 +25,11 @@ public class JavaControl implements IPlugins {
     }
 
     @Override
-    public boolean controlRegex(Path f, String date) {
+    public boolean controlRegex(Path f) {
         int count = 0;
         String error = "ErrorJava == -1";
-//        [\w]*(ErrorJava)[\s]*[=]*[\s]*(-1)[\w ]*
         String regex = "(.*)(ErrorJava)[\\s]*[=]{2}[\\s]*(-1)";
+        Tools tools = Tools.getInstance();
         try {
             String content = new String(Files.readAllBytes(f));
             Pattern r = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
@@ -42,9 +41,7 @@ public class JavaControl implements IPlugins {
                 }
             }
             if (count != 0) {
-                Tools tools = new Tools();
-                String pathFile = tools.pathFile()+"\\"+date+"-log.txt" ;
-                tools.controlFile(pathFile, "Match(s) sur " + count + " ligne(s) pour => " + error + " sur => " + f);
+                tools.controlFile(count, error, f);
                 return true;
             }
         } catch (Exception e) {

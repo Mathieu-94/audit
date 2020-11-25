@@ -26,11 +26,11 @@ public class GradleControl implements IPlugins {
     }
 
     @Override
-    public boolean controlRegex(Path f, String date) {
+    public boolean controlRegex(Path f) {
         int count = 0;
         String error = "AbortOnError True";
-//        Regex linux => "(\r|\n)\\s*(?!//)\\s*AbortOnError\\s*True"
         String regex = "(.*)(AbortOnError)\\s*(True)";
+        Tools tools = Tools.getInstance();
         try {
             String content = new String(Files.readAllBytes(f));
             Pattern r = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
@@ -41,9 +41,7 @@ public class GradleControl implements IPlugins {
                 }
             }
             if (count != 0) {
-                Tools tools = new Tools();
-                String pathFile = tools.pathFile() + "\\" + date + "-log.txt";
-                tools.controlFile(pathFile, "Match(s) sur " + count + " ligne(s) pour => " + error + " sur => " + f);
+                tools.controlFile(count, error, f);
                 return true;
             }
         } catch (Exception e) {

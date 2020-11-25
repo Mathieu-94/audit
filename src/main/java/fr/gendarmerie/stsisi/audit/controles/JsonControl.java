@@ -1,31 +1,28 @@
 package fr.gendarmerie.stsisi.audit.controles;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 import fr.gendarmerie.stsisi.audit.interfaces.IPlugins;
+import fr.gendarmerie.stsisi.audit.pojo.Tracker;
 import fr.gendarmerie.stsisi.audit.tools.Tools;
 
-import java.io.BufferedInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Iterator;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class JsonControl implements IPlugins {
     @Override
     public boolean controlName(Path f) {
-        String name = "json.txt";
+        String name = "json.java";
         Pattern r = Pattern.compile(name);
         Matcher m = r.matcher(f.toFile().getName());
-//        System.out.println("\nMatch sur " + this.getClass().getCanonicalName() + " avec " + f);
         return m.find();
     }
 
@@ -36,73 +33,104 @@ public class JsonControl implements IPlugins {
     }
 
     @Override
-    public boolean controlRegex(Path f, String date) {
+    public boolean controlRegex(Path f) {
         try {
             int count = 0;
+            int count2 = 0;
             String error = "Trackers";
             String content = new String(Files.readAllBytes(f));
-            Tools tools = new Tools();
+            Tools tools = Tools.getInstance();
 
             HttpURLConnection conn = null;
             InputStream is = null;
-            JsonObject json = null;
+            ArrayList<Tracker> mList = new ArrayList<>();
 
             try {
-                URL url = new URL(tools.addressJson()); //Classe qui retourne l'URL du JSon
-//            URLConnection request = url.openConnection();
+                URL url = new URL("https://reports.exodus-privacy.eu.org/api/trackers");
                 conn = (HttpURLConnection) url.openConnection();
                 is = new BufferedInputStream(conn.getInputStream());
                 conn.connect();
-//            JsonElement root = JsonParser.parseReader(new InputStreamReader((InputStream) request.getContent()));
-                JsonElement root = JsonParser.parseReader(new InputStreamReader((InputStream) conn.getContent()));
-                json = root.getAsJsonObject().getAsJsonObject("trackers");
-            } catch (Exception ignored) {
+
+                if (conn.getResponseCode() == 200) {
+                    Reader reader = new InputStreamReader(is, StandardCharsets.UTF_8);
+                    Gson gson = new Gson();
+                    try {
+                        JsonObject test = gson.fromJson(reader, JsonObject.class);
+                        if (test != null && test.has("trackers")) {
+                            JsonObject trackers = test.getAsJsonObject("trackers");
+                            if (trackers != null) {
+                                for (String str : trackers.keySet()) {
+                                    Tracker tracker = gson.fromJson(trackers.getAsJsonObject(str), Tracker.class);
+                                    if (tracker != null) {
+//                                        tracker.setDescription("");
+                                        mList.add(tracker);
+                                    }
+                                }
+                            } else {
+                                count2++;
+                            }
+                        } else {
+                            count2++;
+                        }
+                    } catch (JsonParseException e) {
+                        System.out.println("Erreur de parsing");
+                        count2++;
+                    }
+                } else {
+                    System.out.println("Error code status " + conn.getResponseCode());
+                }
+
+            } catch (Exception e) {
+                System.out.println("Erreur: " + e);
+                count2++;
             } finally {
                 if (is != null) {
                     try {
                         is.close();
-                    } catch (IOException ignored) {
+                    } catch (IOException e) {
+                        System.out.println("Erreur: " + e);
                     }
                 }
                 if (conn != null) {
                     conn.disconnect();
                 }
             }
-
-
-            assert json != null;
-            Iterator x = json.keySet().iterator();
-            JsonArray jsonArray = new JsonArray();
-
-            while (x.hasNext()) {
-                String key = (String) x.next();
-                jsonArray.add(json.get(key));
+            if (count2 != 0) {
+                System.out.println("Erreur du Json");
+                System.exit(-1);
             }
 
-            for (JsonElement j : jsonArray) {
-                JsonObject jsonObject = j.getAsJsonObject();
-                if (((String.valueOf(jsonObject.get("code_signature"))).substring(1, (String.valueOf(jsonObject.get("code_signature"))).length() - 1)).length() > 0) { //J'enleve les " au debut et à la fin
-                    String strCode = (String.valueOf(jsonObject.get("code_signature"))).substring(1, (String.valueOf(jsonObject.get("code_signature"))).length() - 1);
-//                    String strCode2 = "(.*)("+strCode+")(.*)";
-//                    String strCode2 = tools.stringBuilder(strCode);
-//                    Pattern r = Pattern.compile(strCode2, Pattern.CASE_INSENSITIVE);
-                    Pattern r = Pattern.compile(strCode, Pattern.CASE_INSENSITIVE);
-                    Matcher m = r.matcher(content);
-                    while (m.find()) {
-//                        if (!m.group(1).contains("//")) {
-                        count++;
-//                        }
+            String regex;
+            for (Tracker track : mList) {
+//                System.out.println("Tracker "+track.getName()+" - "+track.getCode_signature());
+                List<String> tList = Arrays.asList(track.getCode_signature(), track.getName());
+                for (String t : tList) {
+                    if (t.length() > 0) {
+                        regex = stringBuilder(t);
+                        Pattern r = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+                        Matcher m = r.matcher(content);
+                        while (m.find()) {
+                            if (!m.group(1).contains("//")) {
+                                count++;
+                            }
+                        }
                     }
                 }
             }
             if (count != 0) {
-                String pathFile = tools.pathFile() + "\\" + date + "-log.txt";
-                tools.controlFile(pathFile, "Match(s) sur " + count + " ligne(s) pour => " + error + " sur => " + f);
+                tools.controlFile(count, error, f);
                 return true;
             }
         } catch (Exception e) {
+            e.printStackTrace();
             System.out.println("Erreur: " + e);
         }
         return false;
+    }
+
+    private String stringBuilder(String s) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("(.*)(").append(s).append(")(.*)");
+        return sb.toString();
     }
 }

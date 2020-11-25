@@ -14,7 +14,6 @@ public class DalvikControl implements IPlugins {
         String name = ".java|kt";
         Pattern r = Pattern.compile(name);
         Matcher m = r.matcher(f.toFile().getName());
-        //            System.out.println("\nMatch sur " + this.getClass().getCanonicalName() + " avec " + f);
         return m.find();
     }
 
@@ -25,13 +24,14 @@ public class DalvikControl implements IPlugins {
     }
 
     @Override
-    public boolean controlRegex(Path f, String date) {
+    public boolean controlRegex(Path f) {
         int count1 = 0;
         int count2 = 0;
         String error1 = "import dalvik.system.DexClassLoader";
         String importDalvik = "(.*)import[\\s]*dalvik.system.DexClassLoader";
         String error2 = "new dalvik.system.DexClassLoader.DexClassLoader(...)";
         String utilisationDalvik = "(.*)new[\\s]*dalvik.system.DexClassLoader.DexClassLoader\\(.*\\)";
+        Tools tools = Tools.getInstance();
         try {
             String content = new String(Files.readAllBytes(f));
             Pattern r = Pattern.compile(importDalvik, Pattern.CASE_INSENSITIVE);
@@ -49,13 +49,11 @@ public class DalvikControl implements IPlugins {
                 }
             }
             if (count1 != 0 || count2 !=0) {
-                Tools tools = new Tools();
-                String pathFile = tools.pathFile()+"\\"+date+"-log.txt" ;
                 if (count1 != 0) {
-                    tools.controlFile(pathFile, "Match(s) sur " + count1 + " ligne(s) pour => " + error1 + " sur => " + f);
+                    tools.controlFile(count1, error1, f);
                 }
                 if (count2 != 0) {
-                    tools.controlFile(pathFile, "Match(s) sur " + count2 + " ligne(s) pour => " + error2 + " sur => " + f);
+                    tools.controlFile(count2, error2, f);
                 }
                 return true;
             }

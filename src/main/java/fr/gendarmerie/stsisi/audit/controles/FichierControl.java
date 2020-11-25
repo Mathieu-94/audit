@@ -15,7 +15,6 @@ public class FichierControl implements IPlugins {
         String name = "^fichier";
         Pattern r = Pattern.compile(name);
         Matcher m = r.matcher(f.toFile().getName());
-        //            System.out.println("\nMatch sur " + this.getClass().getCanonicalName() + " avec " + f);
         return m.find();
     }
 
@@ -26,12 +25,11 @@ public class FichierControl implements IPlugins {
     }
 
     @Override
-    public boolean controlRegex(Path f, String date) {
+    public boolean controlRegex(Path f) {
         int count = 0;
         String error = "minSDK>19";
-//        Regex linux => "(\r|\n)\\s*(?!//)\\s*AbortOnError\\s*True"
-//        [\w]*(minSDK)[\s]*[>][\s]*(\d*)[\w]*
         String regex = "(.*)(minSDK)[\\s]*[>][\\s]*(\\d*)";
+        Tools tools = Tools.getInstance();
         try {
             String content = new String(Files.readAllBytes(f));
             Pattern r = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
@@ -43,9 +41,7 @@ public class FichierControl implements IPlugins {
                 }
             }
             if (count != 0) {
-                Tools tools = new Tools();
-                String pathFile = tools.pathFile() + "\\" + date + "-log.txt";
-                tools.controlFile(pathFile, "Match(s) sur " + count + " ligne(s) pour => " + error + " sur => " + f);
+                tools.controlFile(count, error, f);
                 return true;
             }
         } catch (Exception e) {
