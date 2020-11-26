@@ -103,14 +103,15 @@ public class JsonControl implements IPlugins {
             String regex;
             for (Tracker track : mList) {
 //                System.out.println("Tracker "+track.getName()+" - "+track.getCode_signature());
-                List<String> tList = Arrays.asList(track.getCode_signature(), track.getName());
+                List<String> tList = Arrays.asList(track.getCode_signature(), track.getName(), track.getNetwork_signature());
                 for (String t : tList) {
                     if (t.length() > 0) {
                         regex = stringBuilder(t);
-                        Pattern r = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+                        Pattern r = Pattern.compile(regex);
                         Matcher m = r.matcher(content);
                         while (m.find()) {
                             if (!m.group(1).contains("//")) {
+                                tools.controlFile(error, t, f);
                                 count++;
                             }
                         }
@@ -118,7 +119,7 @@ public class JsonControl implements IPlugins {
                 }
             }
             if (count != 0) {
-                tools.controlFile(count, error, f);
+//                tools.controlFile(count, error, f);
                 return true;
             }
         } catch (Exception e) {

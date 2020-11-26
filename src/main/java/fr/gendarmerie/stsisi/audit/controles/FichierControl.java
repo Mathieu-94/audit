@@ -27,6 +27,7 @@ public class FichierControl implements IPlugins {
     @Override
     public boolean controlRegex(Path f) {
         int count = 0;
+        String type = "Erreur";
         String error = "minSDK>19";
         String regex = "(.*)(minSDK)[\\s]*[>][\\s]*(\\d*)";
         Tools tools = Tools.getInstance();
@@ -37,11 +38,12 @@ public class FichierControl implements IPlugins {
             while (m.find()) {
                 int value = Integer.parseInt(m.group(3));
                 if (value > 19 && !m.group(1).contains("//")) {
+                    tools.controlFile(type, error, f);
                     count++;
                 }
             }
             if (count != 0) {
-                tools.controlFile(count, error, f);
+//                tools.controlFile(count, error, f);
                 return true;
             }
         } catch (Exception e) {

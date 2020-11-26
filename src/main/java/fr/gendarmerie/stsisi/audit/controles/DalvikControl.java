@@ -27,6 +27,7 @@ public class DalvikControl implements IPlugins {
     public boolean controlRegex(Path f) {
         int count1 = 0;
         int count2 = 0;
+        String type = "Erreur";
         String error1 = "import dalvik.system.DexClassLoader";
         String importDalvik = "(.*)import[\\s]*dalvik.system.DexClassLoader";
         String error2 = "new dalvik.system.DexClassLoader.DexClassLoader(...)";
@@ -40,21 +41,23 @@ public class DalvikControl implements IPlugins {
             Matcher m2 = r2.matcher(content);
             while (m.find()) {
                 if (!m.group(1).contains("//")) {
+                    tools.controlFile(type, error1, f);
                     count1++;
                 }
             }
             while (m2.find()) {
                 if (!m2.group(1).contains("//")) {
+                    tools.controlFile(type, error2, f);
                     count2++;
                 }
             }
             if (count1 != 0 || count2 !=0) {
-                if (count1 != 0) {
-                    tools.controlFile(count1, error1, f);
-                }
-                if (count2 != 0) {
-                    tools.controlFile(count2, error2, f);
-                }
+//                if (count1 != 0) {
+//                    tools.controlFile(count1, error1, f);
+//                }
+//                if (count2 != 0) {
+//                    tools.controlFile(count2, error2, f);
+//                }
                 return true;
             }
         } catch (Exception e) {

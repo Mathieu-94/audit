@@ -29,14 +29,14 @@ public class Tools {
         return INSTANCE;
     }
 
-    public void controlFile(int count, String error, Path file) {
+    public void controlFile(String error, String t, Path f) {
         String stringCurrentPath = pathLog() + "\\" + date + ".txt";
         File logFile = new File(stringCurrentPath);
         try {
             if (!logFile.exists()) {
                 logFile.createNewFile();
             }
-            Files.write(Paths.get(stringCurrentPath), ("Match(s) sur " + count + " ligne(s) pour => " + error + " sur => " + file+ "\n").getBytes(), StandardOpenOption.APPEND);
+            Files.write(Paths.get(stringCurrentPath), (error + " => " + t + " => " + f+ "\n").getBytes(), StandardOpenOption.APPEND);
         } catch (Exception e) {
             System.out.println("erreur: " + e);
         }

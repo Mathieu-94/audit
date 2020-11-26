@@ -27,6 +27,7 @@ public class JavaControl implements IPlugins {
     @Override
     public boolean controlRegex(Path f) {
         int count = 0;
+        String type = "Erreur";
         String error = "ErrorJava == -1";
         String regex = "(.*)(ErrorJava)[\\s]*[=]{2}[\\s]*(-1)";
         Tools tools = Tools.getInstance();
@@ -37,11 +38,12 @@ public class JavaControl implements IPlugins {
             while (m.find()) {
                 int value = Integer.parseInt(m.group(3));
                 if (value == -1 && !m.group(1).contains("//")) {
+                    tools.controlFile(type, error, f);
                     count++;
                 }
             }
             if (count != 0) {
-                tools.controlFile(count, error, f);
+//                tools.controlFile(count, error, f);
                 return true;
             }
         } catch (Exception e) {

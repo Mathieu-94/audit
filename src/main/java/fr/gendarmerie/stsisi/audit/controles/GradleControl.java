@@ -15,7 +15,6 @@ public class GradleControl implements IPlugins {
         String name = "^build.gradle";
         Pattern r = Pattern.compile(name);
         Matcher m = r.matcher(f.toFile().getName());
-        //            System.out.println("\nMatch sur " + this.getClass().getCanonicalName() + " avec " + f);
         return m.find();
     }
 
@@ -28,6 +27,7 @@ public class GradleControl implements IPlugins {
     @Override
     public boolean controlRegex(Path f) {
         int count = 0;
+        String type = "Erreur";
         String error = "AbortOnError True";
         String regex = "(.*)(AbortOnError)\\s*(True)";
         Tools tools = Tools.getInstance();
@@ -37,11 +37,12 @@ public class GradleControl implements IPlugins {
             Matcher m = r.matcher(content);
             while (m.find()) {
                 if (!m.group(1).contains("//")) {
+                    tools.controlFile(type, error, f);
                     count++;
                 }
             }
             if (count != 0) {
-                tools.controlFile(count, error, f);
+//                tools.controlFile(count, error, f);
                 return true;
             }
         } catch (Exception e) {
