@@ -56,17 +56,13 @@ public class JsonControl implements IPlugins {
                     Gson gson = new Gson();
                     try {
                         JsonObject test = gson.fromJson(reader, JsonObject.class);
-                        if (test != null && test.has("trackers")) {
+                        if (test != null && test.has("trackers") && test.getAsJsonObject("trackers") != null) {
                             JsonObject trackers = test.getAsJsonObject("trackers");
-                            if (trackers != null) {
-                                for (String str : trackers.keySet()) {
-                                    Tracker tracker = gson.fromJson(trackers.getAsJsonObject(str), Tracker.class);
-                                    if (tracker != null) {
-                                        mList.add(tracker);
-                                    }
+                            for (String str : trackers.keySet()) {
+                                Tracker tracker = gson.fromJson(trackers.getAsJsonObject(str), Tracker.class);
+                                if (tracker != null) {
+                                    mList.add(tracker);
                                 }
-                            } else {
-                                count2++;
                             }
                         } else {
                             count2++;
