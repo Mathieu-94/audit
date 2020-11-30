@@ -62,7 +62,6 @@ public class JsonControl implements IPlugins {
                                 for (String str : trackers.keySet()) {
                                     Tracker tracker = gson.fromJson(trackers.getAsJsonObject(str), Tracker.class);
                                     if (tracker != null) {
-//                                        tracker.setDescription("");
                                         mList.add(tracker);
                                     }
                                 }
