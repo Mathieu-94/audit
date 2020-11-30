@@ -102,7 +102,6 @@ public class JsonControl implements IPlugins {
 
             String regex;
             for (Tracker track : mList) {
-//                System.out.println("Tracker "+track.getName()+" - "+track.getCode_signature());
                 List<String> tList = Arrays.asList(track.getCode_signature(), track.getName(), track.getNetwork_signature());
                 for (String t : tList) {
                     if (t.length() > 0) {
