@@ -10,58 +10,51 @@ import java.util.regex.Pattern;
 
 public class DalvikControl implements IPlugins {
     @Override
-    public boolean controlName(Path f) {
-        String name = ".java|kt";
-        Pattern r = Pattern.compile(name);
-        Matcher m = r.matcher(f.toFile().getName());
-        return m.find();
+    synchronized public boolean controlName(Path filePath) {
+        String fileName = ".java|kt";
+        Pattern patternControlName = Pattern.compile(fileName);
+        Matcher matcherControlName = patternControlName.matcher(filePath.toFile().getName());
+        return matcherControlName.find();
     }
 
     @Override
-    public boolean controlSize(Path f) {
-        String file = f.toString();
-        return file.length() > 0;
+    public boolean controlSize(Path filePath) {
+        String fileString = filePath.toString();
+        return fileString.length() > 0;
     }
 
     @Override
-    public boolean controlRegex(Path f) {
-        int count1 = 0;
-        int count2 = 0;
-        String type = "Erreur";
-        String error1 = "import dalvik.system.DexClassLoader";
-        String importDalvik = "(.*)import[\\s]*dalvik.system.DexClassLoader";
-        String error2 = "new dalvik.system.DexClassLoader.DexClassLoader(...)";
-        String utilisationDalvik = "(.*)new[\\s]*dalvik.system.DexClassLoader.DexClassLoader\\(.*\\)";
+    public boolean controlRegex(Path filePath) {
+        boolean isStringFound = false;
+        String typeError = "Erreur";
+        String nameErrorImportDalvik = "import dalvik.system.DexClassLoader";
+        String regexImportDalvik = "(.*)import[\\s]*dalvik.system.DexClassLoader";
+        String nameErrorUtilisationDalvik = "new dalvik.system.DexClassLoader.DexClassLoader(...)";
+        String regexUtilisationDalvik = "(.*)new[\\s]*dalvik.system.DexClassLoader.DexClassLoader\\(.*\\)";
         Tools tools = Tools.getInstance();
         try {
-            String content = new String(Files.readAllBytes(f));
-            Pattern r = Pattern.compile(importDalvik, Pattern.CASE_INSENSITIVE);
-            Matcher m = r.matcher(content);
-            Pattern r2 = Pattern.compile(utilisationDalvik, Pattern.CASE_INSENSITIVE);
-            Matcher m2 = r2.matcher(content);
-            while (m.find()) {
-                if (!m.group(1).contains("//")) {
-                    tools.controlFile(type, error1, f);
-                    count1++;
+            String stringFileContent = new String(Files.readAllBytes(filePath));
+            Pattern patternRegexImportDalvik = Pattern.compile(regexImportDalvik, Pattern.CASE_INSENSITIVE);
+            Matcher matcherRegexImportDalvik = patternRegexImportDalvik.matcher(stringFileContent);
+            Pattern patternRegexUtilisationDalvik = Pattern.compile(regexUtilisationDalvik, Pattern.CASE_INSENSITIVE);
+            Matcher matcherRegexUtilisationDalvik = patternRegexUtilisationDalvik.matcher(stringFileContent);
+            while (matcherRegexImportDalvik.find()) {
+                if (!matcherRegexImportDalvik.group(1).contains("//")) {
+                    tools.controlFile(typeError, nameErrorImportDalvik, filePath);
+                    isStringFound = true;
                 }
             }
-            while (m2.find()) {
-                if (!m2.group(1).contains("//")) {
-                    tools.controlFile(type, error2, f);
-                    count2++;
+            while (matcherRegexUtilisationDalvik.find()) {
+                if (!matcherRegexUtilisationDalvik.group(1).contains("//")) {
+                    tools.controlFile(typeError, nameErrorUtilisationDalvik, filePath);
+                    isStringFound = true;
                 }
             }
-            if (count1 != 0 || count2 !=0) {
-//                if (count1 != 0) {
-//                    tools.controlFile(count1, error1, f);
-//                }
-//                if (count2 != 0) {
-//                    tools.controlFile(count2, error2, f);
-//                }
+            if (isStringFound) {
                 return true;
             }
         } catch (Exception e) {
-            System.out.println("Erreur => " + e);
+            System.out.println("Erreur: " + e);
         }
         return false;
     }

@@ -1,13 +1,18 @@
 package fr.gendarmerie.stsisi.audit.pojo;
 
+import com.google.gson.annotations.SerializedName;
+
 public class Tracker {
 
     private int id;
     private String name;
     private String description;
-    private String creation_date;
-    private String code_signature;
-    private String network_signature;
+    @SerializedName("creation_date")
+    private String creationDate;
+    @SerializedName("code_signature")
+    private String codeSignature;
+    @SerializedName("network_signature")
+    private String networkSignature;
     private String website;
 
     public int getId() {
@@ -34,28 +39,28 @@ public class Tracker {
         this.description = description;
     }
 
-    public String getCreation_date() {
-        return creation_date;
+    public String getCreationDate() {
+        return creationDate;
     }
 
-    public void setCreation_date(String creation_date) {
-        this.creation_date = creation_date;
+    public void setCreationDate(String creationDate) {
+        this.creationDate = creationDate;
     }
 
-    public String getCode_signature() {
-        return code_signature;
+    public String getCodeSignature() {
+        return codeSignature;
     }
 
-    public void setCode_signature(String code_signature) {
-        this.code_signature = code_signature;
+    public void setCodeSignature(String codeSignature) {
+        this.codeSignature = codeSignature;
     }
 
-    public String getNetwork_signature() {
-        return network_signature;
+    public String getNetworkSignature() {
+        return networkSignature;
     }
 
-    public void setNetwork_signature(String network_signature) {
-        this.network_signature = network_signature;
+    public void setNetworkSignature(String networkSignature) {
+        this.networkSignature = networkSignature;
     }
 
     public String getWebsite() {

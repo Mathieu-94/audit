@@ -3,9 +3,9 @@ package fr.gendarmerie.stsisi.audit.interfaces;
 import java.nio.file.Path;
 
 public interface IPlugins {
-    boolean controlName(Path f);
+    boolean controlName(Path filePath);
 
-    boolean controlSize(Path f);
+    boolean controlSize(Path filePath);
 
-    boolean controlRegex(Path f);
+    boolean controlRegex(Path filePath);
 }

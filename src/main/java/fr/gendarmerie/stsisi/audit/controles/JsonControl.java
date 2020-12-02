@@ -19,26 +19,25 @@ import java.util.regex.Pattern;
 
 public class JsonControl implements IPlugins {
     @Override
-    public boolean controlName(Path f) {
-        String name = "json.java";
-        Pattern r = Pattern.compile(name);
-        Matcher m = r.matcher(f.toFile().getName());
-        return m.find();
+    public boolean controlName(Path filePath) {
+        String fileName = "json.java";
+        Pattern patternControlName = Pattern.compile(fileName);
+        Matcher matcherControlName = patternControlName.matcher(filePath.toFile().getName());
+        return matcherControlName.find();
     }
 
     @Override
-    public boolean controlSize(Path f) {
-        String file = f.toString();
-        return file.length() > 0;
+    public boolean controlSize(Path filePath) {
+        String fileString = filePath.toString();
+        return fileString.length() > 0;
     }
 
     @Override
-    public boolean controlRegex(Path f) {
+    public boolean controlRegex(Path filePath) {
+        boolean isStringFound = false;
+        String typeError = "Trackers";
         try {
-            int count = 0;
-            int count2 = 0;
-            String error = "Trackers";
-            String content = new String(Files.readAllBytes(f));
+            String stringFileContent = new String(Files.readAllBytes(filePath));
             Tools tools = Tools.getInstance();
 
             HttpURLConnection conn = null;
@@ -65,11 +64,11 @@ public class JsonControl implements IPlugins {
                                 }
                             }
                         } else {
-                            count2++;
+                            isStringFound = true;
                         }
                     } catch (JsonParseException e) {
-                        System.out.println("Erreur de parsing");
-                        count2++;
+                        System.out.println("Erreur de parsing: " + e);
+                        isStringFound = true;
                     }
                 } else {
                     System.out.println("Error code status " + conn.getResponseCode());
@@ -77,7 +76,7 @@ public class JsonControl implements IPlugins {
 
             } catch (Exception e) {
                 System.out.println("Erreur: " + e);
-                count2++;
+                isStringFound = true;
             } finally {
                 if (is != null) {
                     try {
@@ -90,30 +89,31 @@ public class JsonControl implements IPlugins {
                     conn.disconnect();
                 }
             }
-            if (count2 != 0) {
+
+            if (isStringFound) {
                 System.out.println("Erreur du Json");
                 System.exit(-1);
             }
 
+            isStringFound = false;
             String regex;
             for (Tracker track : mList) {
-                List<String> tList = Arrays.asList(track.getCode_signature(), track.getName(), track.getNetwork_signature());
-                for (String t : tList) {
-                    if (t.length() > 0) {
-                        regex = stringBuilder(t);
-                        Pattern r = Pattern.compile(regex);
-                        Matcher m = r.matcher(content);
-                        while (m.find()) {
-                            if (!m.group(1).contains("//")) {
-                                tools.controlFile(error, t, f);
-                                count++;
+                List<String> tList = Arrays.asList(track.getCodeSignature(), track.getName(), track.getNetworkSignature());
+                for (String nameError : tList) {
+                    if (nameError.length() > 0) {
+                        regex = myStringBuilder(nameError);
+                        Pattern patternRegex = Pattern.compile(regex);
+                        Matcher matcherRegex = patternRegex.matcher(stringFileContent);
+                        while (matcherRegex.find()) {
+                            if (!matcherRegex.group(1).contains("//")) {
+                                tools.controlFile(typeError, nameError, filePath);
+                                isStringFound = true;
                             }
                         }
                     }
                 }
             }
-            if (count != 0) {
-//                tools.controlFile(count, error, f);
+            if (isStringFound) {
                 return true;
             }
         } catch (Exception e) {
@@ -123,7 +123,7 @@ public class JsonControl implements IPlugins {
         return false;
     }
 
-    private String stringBuilder(String s) {
+    private String myStringBuilder(String s) {
         StringBuilder sb = new StringBuilder();
         sb.append("(.*)(").append(s).append(")(.*)");
         return sb.toString();

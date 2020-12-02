@@ -29,14 +29,19 @@ public class Tools {
         return INSTANCE;
     }
 
-    public void controlFile(String error, String t, Path f) {
-        String stringCurrentPath = pathLog() + "\\" + date + ".txt";
+    public void controlFile(String typeError, String nameError, Path filePath) {
+        String stringCurrentPath;
+        if (System.getProperty("os.name").contains("Windows")) {
+            stringCurrentPath = pathLog() + "\\" + date + ".txt";
+        } else {
+            stringCurrentPath = pathLog() + "/" + date + ".txt";
+        }
         File logFile = new File(stringCurrentPath);
         try {
             if (!logFile.exists()) {
                 logFile.createNewFile();
             }
-            Files.write(Paths.get(stringCurrentPath), (error + " => " + t + " => " + f+ "\n").getBytes(), StandardOpenOption.APPEND);
+            Files.write(Paths.get(stringCurrentPath), (typeError + " => " + nameError + " => " + filePath + "\n").getBytes(), StandardOpenOption.APPEND);
         } catch (Exception e) {
             System.out.println("erreur: " + e);
         }

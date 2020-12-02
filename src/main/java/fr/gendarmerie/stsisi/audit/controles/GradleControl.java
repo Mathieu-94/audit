@@ -11,42 +11,41 @@ import java.util.regex.Pattern;
 public class GradleControl implements IPlugins {
 
     @Override
-    public boolean controlName(Path f) {
-        String name = "^build.gradle";
-        Pattern r = Pattern.compile(name);
-        Matcher m = r.matcher(f.toFile().getName());
-        return m.find();
+    synchronized public boolean controlName(Path filePath) {
+        String fileName = "^build.gradle";
+        Pattern patternControlName = Pattern.compile(fileName);
+        Matcher matcherControlName = patternControlName.matcher(filePath.toFile().getName());
+        return matcherControlName.find();
     }
 
     @Override
-    public boolean controlSize(Path f) {
-        String file = f.toString();
-        return file.length() > 0;
+    public boolean controlSize(Path filePath) {
+        String fileString = filePath.toString();
+        return fileString.length() > 0;
     }
 
     @Override
-    public boolean controlRegex(Path f) {
-        int count = 0;
-        String type = "Erreur";
-        String error = "AbortOnError True";
-        String regex = "(.*)(AbortOnError)\\s*(True)";
+    public boolean controlRegex(Path filePath) {
+        boolean isStringFound = false;
+        String typeError = "Erreur";
+        String nameError = "AbortOnError True";
+        String regexError = "(.*)(AbortOnError)\\s*(True)";
         Tools tools = Tools.getInstance();
         try {
-            String content = new String(Files.readAllBytes(f));
-            Pattern r = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
-            Matcher m = r.matcher(content);
-            while (m.find()) {
-                if (!m.group(1).contains("//")) {
-                    tools.controlFile(type, error, f);
-                    count++;
+            String stringFileContent = new String(Files.readAllBytes(filePath));
+            Pattern patternRegex = Pattern.compile(regexError, Pattern.CASE_INSENSITIVE);
+            Matcher matcherRegex = patternRegex.matcher(stringFileContent);
+            while (matcherRegex.find()) {
+                if (!matcherRegex.group(1).contains("//")) {
+                    tools.controlFile(typeError, nameError, filePath);
+                    isStringFound = true;
                 }
             }
-            if (count != 0) {
-//                tools.controlFile(count, error, f);
+            if (isStringFound) {
                 return true;
             }
         } catch (Exception e) {
-            System.out.println("Erreur => " + e);
+            System.out.println("Erreur: " + e);
         }
         return false;
     }
